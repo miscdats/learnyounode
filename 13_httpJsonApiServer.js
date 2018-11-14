@@ -25,3 +25,47 @@
   Your server should listen on the port provided by the first argument to
   your program.
 */
+
+var http = require('http');
+var url = require('url');
+var port = process.argv[2];
+
+http.createServer(function (request, response) {
+  var urlObject = url.parse(request.url, true),
+  pathName = urlObject.pathname,
+  startTime = urlObject.query.iso,
+  result;
+  if (pathName === '/api/unixtime') {
+    result = getUnixTimeStamp(startTime);
+  }
+  else if (pathName === '/api/parsetime') {
+    result = getTimeObj(startTime);
+  }
+  if (result) {
+    response.writeHead(200, {'Content-Type': 'application/JSON'});
+    response.end(JSON.stringify(result));
+  }
+  else {
+    response.writeHead(404);
+    response.end();
+  }
+}).listen(port)
+
+function getUnixTimeStamp(startTime) {
+  return {
+    unixtime: getTimeStamp(startTime)
+  };
+}
+
+function getTimeStamp(startTime) {
+  return Date.parse(startTime);
+}
+
+function getTimeObj(startTime) {
+  var date = new Date(getTimeStamp(startTime));
+  return {
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    second: date.getSeconds()
+  };
+}

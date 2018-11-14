@@ -40,13 +40,19 @@
   who expects this contract. So your module could be used by anyone else who
   does learnyounode, or the verifier, and just work.
   */
+//File (1 of 2)
 
-var lsLib = require('./lsLib');
-var path = process.argv[2];
+var path = require('path');
+var myModule = require('./6_makeItModular2.js');
+var dir = process.argv[2];
 var ext = process.argv[3];
 
-lsLib(path, ext, function(err, files) {
-  for (i = 0; i < files.length; i++) {
-    console.log(files[i]);
-  }
-});
+var callback = function (err, list) {
+  if (err)
+    throw err;
+  list.forEach(function (file) {
+    console.log(file);
+  })
+}
+
+myModule(dir, ext, callback);
