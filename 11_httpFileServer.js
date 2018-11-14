@@ -8,3 +8,13 @@
   command-line argument. You must use the fs.createReadStream() method to
   stream the file contents to the response.
   */
+
+var fs = require('fs');
+var http = require('http');
+var port = process.argv[2];
+var file = process.argv[3];
+
+http.createServer(function (request, response) {
+  response.writeHead(200, {'content-type' : 'text/plain'});
+  fs.createReadStream(file).pipe(response);
+}).listen(port);

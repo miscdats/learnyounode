@@ -8,3 +8,36 @@
   must print them out in the same order as the URLs are provided to you as
   command-line arguments.
   */
+
+var http = require('http');
+//requires bl installed (used in exercise 8)
+var bl = require('bl');
+var results = [];
+var count = 0;
+var urls = process.argv.slice(2);
+var urlsAmt = urls.length;
+
+function printResults() {
+  for (var i = 0; i < urlsAmt; i++) {
+    console.log(results[i])
+  }
+};
+
+function httpGet(index) {
+  http.get(urls[index], function(response) {
+    response.pipe(bl(function (err, data) {
+      if (err) {
+        return console.error(err)
+      }
+      results[index] = data.toString()
+      count++
+      if (count === urlsAmt) {
+        printResults()
+      }
+    }))
+  })
+};
+
+for (var i = 0; i < urlsAmt; i++) {
+    httpGet(i)
+};
